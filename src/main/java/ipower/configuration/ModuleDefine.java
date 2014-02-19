@@ -7,7 +7,8 @@ import java.io.Serializable;
  * @since 2013-09-18。
  * */
 public class ModuleDefine implements Serializable {
-	private static final long serialVersionUID = 1L;	private String moduleID, moduleName, moduleUri;
+	private static final long serialVersionUID = 1L;	
+	private String moduleID, moduleName, moduleUri;
 	private Integer orderNo = 0;
 	private ModuleDefineCollection modules;
 	/**

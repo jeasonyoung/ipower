@@ -28,7 +28,7 @@ public final class MD5Util {
 		char[] results = new char[len * 2];
 		int k = 0;
 		for(int i = 0; i < len; i++){
-			results[k++] = HexDigits[data[i] >>> 4 & 0xf];
+			results[k++] = HexDigits[(data[i] >>> 4) & 0xf];
 			results[k++] = HexDigits[data[i] & 0xf];
 		}
 		return new String(results);

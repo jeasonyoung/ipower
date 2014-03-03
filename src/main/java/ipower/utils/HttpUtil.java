@@ -9,6 +9,8 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.SecureRandom;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -25,6 +27,8 @@ public final class HttpUtil {
 	 * 发起http请求获取反馈。
 	 * @param connection
 	 * 	http链接对象。
+	 * @param headers
+	 * 	头信息。
 	 * @param method
 	 * 	请求方式(GET,POST)。
 	 * @param data
@@ -33,10 +37,19 @@ public final class HttpUtil {
 	 * 	反馈结果。
 	 * @throws IOException 
 	 * */
-	public static String sendRequest(HttpURLConnection connection, String method,String data) throws IOException{
+	public static String sendRequest(HttpURLConnection connection,Map<String, String> headers, String method, String data) throws IOException{
 		
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
+		//头信息。
+		if(headers != null && headers.size() > 0){
+			 for(Entry<String, String> entry : headers.entrySet()){
+				 String key = entry.getKey(),value = entry.getValue();
+				 if(key != null && !key.trim().isEmpty()){
+					 connection.addRequestProperty(key, value);
+				 }
+			 }
+		}
 		//设置请求方式(GET/POST)
 		connection.setRequestMethod(method);
 		if(method.equalsIgnoreCase("GET")){
@@ -96,13 +109,32 @@ public final class HttpUtil {
 			HttpsURLConnection connection = (HttpsURLConnection)uri.openConnection();
 			connection.setSSLSocketFactory(ssf);
 			
-			return sendRequest(connection, method, data);
+			return sendRequest(connection,null, method, data);
 		}catch(ConnectException e){
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	/**
+	 * 发起https请求获取反馈。
+	 * @param url
+	 * 	请求地址。
+	 * @param headers。
+	 * 	头信息。
+	 * @param method
+	 * 	请求方式(GET,POST)。
+	 * @param data
+	 * 	提交数据。
+	 * @return
+	 * 	反馈结果。
+	 * @throws IOException 
+	 * */
+	public static String sendRequest(String url,Map<String, String> headers, String method,String data) throws IOException{
+		URL uri = new URL(url);
+		HttpURLConnection connection = (HttpURLConnection)uri.openConnection();
+		return sendRequest(connection, headers, method, data);
 	}
 	/**
 	 * 发起https请求获取反馈。
@@ -117,8 +149,6 @@ public final class HttpUtil {
 	 * @throws IOException 
 	 * */
 	public static String sendRequest(String url, String method,String data) throws IOException{
-		URL uri = new URL(url);
-		HttpURLConnection connection = (HttpURLConnection)uri.openConnection();
-		return sendRequest(connection, method, data);
+		return sendRequest(url,null, method, data);
 	}
 }

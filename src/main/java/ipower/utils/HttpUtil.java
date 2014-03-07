@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -93,9 +95,13 @@ public final class HttpUtil {
 	 * 	提交数据。
 	 * @return
 	 * 	反馈结果。
+	 * @throws IOException
+	 * @throws NoSuchProviderException 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws KeyManagementException 
 	 * */
-	public static String sendRequest(X509TrustManager x509TrustManager,String url, String method,String data){
-		try {
+	public static String sendRequest(X509TrustManager x509TrustManager,String url, String method,String data) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException{
+		 
 			if(x509TrustManager == null)
 				return sendRequest(url, method, data);
 			//创建SSLContext对象，并使用我们指定的信任管理器初始化
@@ -110,12 +116,6 @@ public final class HttpUtil {
 			connection.setSSLSocketFactory(ssf);
 			
 			return sendRequest(connection,null, method, data);
-		}catch(ConnectException e){
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 	/**
 	 * 发起https请求获取反馈。

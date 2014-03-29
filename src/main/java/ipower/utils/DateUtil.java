@@ -38,4 +38,23 @@ public final class DateUtil {
 		calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek() + 6);//sunday
 		return calendar.getTime();
 	}
+	/**
+	 * 获取当前日期是星期几。
+	 *  @param date
+	 *   星期几。
+	 * */
+	public static int DayOfWeekValue(Date date){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.DAY_OF_WEEK);
+	}
+	/**
+	 * 获取当前日期是星期几。
+	 *  @param date
+	 *   星期几。
+	 * */
+	public static String DayOfWeekText(Date date){
+		String[] weekTexts = {"", "日", "一", "二", "三", "四", "五", "六"};
+		return  "星期" + weekTexts[DayOfWeekValue(date)];
+	}
 }

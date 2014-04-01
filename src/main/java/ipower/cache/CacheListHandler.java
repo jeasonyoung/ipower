@@ -3,6 +3,8 @@ package ipower.cache;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -13,14 +15,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2014-02-27.
  * */
 public class CacheListHandler {
-	private static final long SECOND_TIME = 1000;
+	private static final long SECOND_TIME = 1000 * 20;
 	private static final ConcurrentHashMap<String, CacheEntity<?>> map;
-	private static final List<CacheEntity<?>> tempList;
-	
+	private static final Timer timer;
 	static{
 		map = new ConcurrentHashMap<>(new HashMap<String, CacheEntity<?>>(1<<18));
-		tempList = new ArrayList<>();
-		new Thread(new TimeoutTimerThread()).start();
+		timer = new Timer();
+		timer.schedule(new TimeoutTimerTask(), SECOND_TIME);
 	}
 	/**
 	 * 增加缓存对象。
@@ -34,8 +35,6 @@ public class CacheListHandler {
 	public static synchronized void addCache(String key,CacheEntity<?> entity,int validityTime){
 		entity.setTimeoutStamp(System.currentTimeMillis() + validityTime * SECOND_TIME);
 		map.put(key, entity);
-		//添加到过期处理队列。
-		tempList.add(entity);
 	}
 	/**
 	 * 增加缓存。
@@ -86,48 +85,33 @@ public class CacheListHandler {
 	 * 清除全部缓存。
 	 * */
 	public static synchronized void ClearCache(){
-		tempList.clear();
 		map.clear();
 	}
 	/**
 	 * 缓存过期处理线程类。
 	 * */
-	static class TimeoutTimerThread implements Runnable{
+	static class TimeoutTimerTask extends TimerTask{
 
 		@Override
 		public void run() {
-			while(true){
-				try {
-					//过期检查
-					this.checkTime();
-					//线程休眠
-					Thread.sleep(SECOND_TIME);
-				} catch (Exception e) {
-					e.printStackTrace();
+			try {
+				if(map != null && map.size() > 0){
+					 List<String> keys = new ArrayList<>();
+					 for(CacheEntity<?> entity : map.values()){
+						 if(entity == null)continue;
+						 if(System.currentTimeMillis() - entity.getTimeoutStamp() > 0){
+							 keys.add(entity.getKey());
+						 }
+					 }
+					for(int i = 0; i < keys.size(); i++){
+						removeCache(keys.get(i));
+					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally{
+				timer.schedule(this, SECOND_TIME);
 			}
-		}
-		/**
-		 * 过期缓存具体处理方法。
-		 * @throws Exception 
-		 * */
-		private void checkTime() throws Exception{
-			if(tempList.size() == 0){
-				Thread.sleep(SECOND_TIME * 10);
-				return;
-			}
-			long timeout = 1000L;
-			for(int i = 0; i < tempList.size(); i++){
-				CacheEntity<?> entity = tempList.get(i);
-				if(entity == null)continue;
-				if((timeout = entity.getTimeoutStamp() - System.currentTimeMillis()) > 0){
-					Thread.sleep(timeout);
-					continue;
-				}
-				//清除过期缓存和删除对应的缓存队列
-				removeCache(entity.getKey());
-				tempList.remove(entity);
-			}
-		}
+		}	
 	}
 }

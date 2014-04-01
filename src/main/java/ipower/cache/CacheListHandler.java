@@ -110,7 +110,7 @@ public class CacheListHandler {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally{
-				timer.schedule(this, SECOND_TIME);
+				timer.schedule(new TimeoutTimerTask(), SECOND_TIME);
 			}
 		}	
 	}

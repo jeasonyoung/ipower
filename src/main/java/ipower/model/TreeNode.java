@@ -1,8 +1,6 @@
 package ipower.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,13 +17,6 @@ public class TreeNode implements Serializable {
 	private String id,text,iconCls,state = "open";
 	private Map<String, Object> attributes;
 	private List<TreeNode> children;
-	/**
-	 * 构造函数。
-	 * */
-	public TreeNode(){
-		this.setAttributes(new HashMap<String,Object>());
-		this.setChildren(new ArrayList<TreeNode>());
-	}
 	/**
 	 * 获取节点ID。
 	 * @return 节点ID。

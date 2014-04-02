@@ -1,8 +1,6 @@
 package ipower.dao;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 /**
  * 数据操作接口。
  * @author 杨勇.
@@ -43,25 +41,4 @@ public interface IDao<T> {
 	 * 	数据对象。
 	 * */
 	void delete(T data);
-	/**
-	 * 查询数据对象。
-	 * @param hql
-	 * 	HQL语句。
-	 * @param parameters
-	 * 	参数集合。
-	 * @param page
-	 * 	页码索引。
-	 * @param rows
-	 * 	页记录。
-	 * @return 数据对象集合。
-	 * */
-	List<T> find(String hql,Map<String, Object> parameters, Integer page, Integer rows);
-	/**
-	 * 统计数据对象。
-	 * @param hql
-	 * 	HQL语句。
-	 * @param parameters
-	 *  参数对象集合。
-	 * */
-	Long count(String hql,Map<String, Object> parameters);
 }

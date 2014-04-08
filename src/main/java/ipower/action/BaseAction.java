@@ -1,5 +1,7 @@
 package ipower.action;
 
+import ipower.aware.IUserAware;
+import ipower.model.UserIdentity;
 import ipower.utils.XmlUtil;
 
 import java.io.IOException;
@@ -20,7 +22,29 @@ import com.opensymphony.xwork2.Action;
  * @author 杨勇.
  * @since 2013-11-27.
  * */
-public abstract class BaseAction implements Action {
+public  abstract class BaseAction implements Action, IUserAware {
+	/**
+	 * 当前用户的SESSION键值。
+	 * */
+	public final static String CURRENT_USER_SESSION_KEY = "ipower_action_CURRENT_USER_SESSION";
+	private UserIdentity identity;
+	/**
+	 * 设置用户信息。
+	 * @param identity
+	 * 用户信息对象。
+	 * */
+	@Override
+	public void setUserIdentity(UserIdentity identity) {
+		 this.identity = identity;
+	}
+	/**
+	 * 获取用户信息。
+	 * @return
+	 * 用户信息。
+	 * */
+	protected UserIdentity getUserIdentity(){
+		return this.identity;
+	}
 	/**
 	 * 将对象转换成JSON字符串，并响应回前台。
 	 * @param o
@@ -39,7 +63,6 @@ public abstract class BaseAction implements Action {
 			writer.close();
 		}
 	}
-	
 	/**
 	 * 输出Xml。
 	 * @param doc

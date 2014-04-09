@@ -104,4 +104,26 @@ public  abstract class BaseAction implements Action, IUserAware {
 	public String edit(){
 		return "edit";
 	}
+	/**
+	 * 获取当前域名URL。
+	 * */
+	protected String host(){
+		StringBuilder urlBuilder = new StringBuilder();
+		urlBuilder.append(ServletActionContext.getRequest().getScheme())
+					   .append("://")
+					   .append(ServletActionContext.getRequest().getServerName());
+		int port = ServletActionContext.getRequest().getServerPort();
+		if(port != 80){
+			urlBuilder.append(":").append(port);
+		}
+		urlBuilder.append(ServletActionContext.getRequest().getContextPath());
+		return urlBuilder.toString();
+	}
+	/**
+	 * 获取当前域名URL输出。
+	 * @throws IOException 
+	 * */
+	public void hostUrl() throws IOException{
+		this.writeJson(this.host());
+	}
 }

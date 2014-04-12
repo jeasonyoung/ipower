@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author yangyong.
  * @since 2014-02-27.
  * */
-public class CacheListHandler {
+public final class CacheListHandler {
 	private static final long SECOND_TIME = 1000 * 20;
 	private static final ConcurrentHashMap<String, CacheEntity<?>> map;
 	private static final Timer timer;

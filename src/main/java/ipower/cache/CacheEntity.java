@@ -58,8 +58,7 @@ public class CacheEntity<T extends Serializable> implements Serializable {
 	 * */
 	public CacheEntity(String key,T entity,int validityTime){
 		this(key,entity);
-		this.validityTime = validityTime;
-		this.timeoutStamp = System.currentTimeMillis() + validityTime * 1000;
+		this.setValidityTime(validityTime);
 	}
 	/**
 	 * 获取缓存键。
@@ -104,7 +103,10 @@ public class CacheEntity<T extends Serializable> implements Serializable {
 	 * 	有效时长(单位秒)。
 	 * */
 	public void setValidityTime(int validityTime) {
-		this.validityTime = validityTime;
+		if(validityTime > 0){
+			this.validityTime = validityTime;
+			this.timeoutStamp = System.currentTimeMillis() + validityTime * 1000;
+		}
 	}
 	/**
 	 * 获取过期时间戳。

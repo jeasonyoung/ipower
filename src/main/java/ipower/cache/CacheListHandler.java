@@ -47,6 +47,16 @@ public final class CacheListHandler {
 		addCache(key, entity, entity.getValidityTime());
 	}
 	/**
+	 * 增加缓存。
+	 * @param entity
+	 * 	缓存对象.
+	 * */
+	public static void addCache(CacheEntity<?> entity){
+		if(entity != null && entity.getKey() != null && !entity.getKey().trim().isEmpty()){
+			addCache(entity.getKey(), entity);
+		}
+	}
+	/**
 	 * 获取缓存对象。
 	 * @param key
 	 * 	缓存键。
